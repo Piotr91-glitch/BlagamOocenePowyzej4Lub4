@@ -1,0 +1,56 @@
+﻿@model IEnumerable<LibApp.Models.Book>
+
+    @{
+    ViewBag.Title = "Books";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <h2>Books</h2>
+
+    <p>
+        <a class="btn btn-primary" asp-action="New">New Book</a>
+    </p>
+
+    <table id="booksTable" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Genre</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model)
+        {
+            <tr>
+                <td><a asp-action="Edit" asp-route-id="@book.Id">@Html.DisplayFor(modelItem => book.Title)</a></td>
+                <td>@book.Genre.Name</td>
+                <td><a asp-action="Details" asp-route-id="@book.Id">Details</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function () {
+            $('#booksTable').DataTable({
+                ajax: {
+                    url: '/api/BooksApi',
+                    dataSrc: ''
+                },
+                columns: [
+                    {
+                        data: 'title', render: function (data, type, row) {
+                            return '<a href="/Books/Details/' + row.id + '">' + data + '</a>';
+                        }
+                    },
+                    { data: 'genre.name' },
+                    {
+                        data: 'id', render: function (data) {
+                            return '<a href="/Books/Details/' + data + '">Details</a>';
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
